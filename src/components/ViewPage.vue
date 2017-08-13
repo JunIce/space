@@ -2,14 +2,15 @@
 <script>
 import AddPage from '@/components/AddPage'
 export default {
-	props: ['nodata'],
+	props: ['defaultdata'],
 	components:{
 		AddPage
 	},
 	render(h) {		
+		console.log(this.defaultdata)
 		return h(AddPage ,{
 			props: {
-				someProps: this.nodata
+				someProps: this.defaultdata
 			}
 		})
 	}

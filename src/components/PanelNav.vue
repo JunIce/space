@@ -5,18 +5,18 @@
 		</ul>
 		
 		<div class="user-list">
-	        <view-page :is="currentView" :nodata="nodata"></view-page>
+	        <view-page :defaultdata="defaultdata"></view-page>
 		</div>
 	</div>
 </template>
 
 <script>
 import ViewPage from '@/components/ViewPage'
-import Follow from '@/components/Follow'
-import Fans from '@/components/Fans'
-import Album from '@/components/Album'
-import Photo from '@/components/Photo'
-import Asset from '@/components/Asset'
+// import Follow from '@/components/Follow'
+// import Fans from '@/components/Fans'
+// import Album from '@/components/Album'
+// import Photo from '@/components/Photo'
+// import Asset from '@/components/Asset'
 
 import Smark from '@/components/Smark'
 
@@ -56,17 +56,16 @@ export default {
 				title:'暂时没有关注的标签~~',
 				innerText : '添加留言'
 			}],
-			currentView:'',
-			nodata : {}
+			defaultdata : {}
 		}
 	},
 	components:{
 		ViewPage,
-		Follow,
-		Fans,
-		Album,
-		Photo,
-		Asset,
+		// Follow,
+		// Fans,
+		// Album,
+		// Photo,
+		// Asset,
 		Smark
 	},
 	mounted(){
@@ -78,8 +77,9 @@ export default {
 		tabnav(el, index){
 			this.clearClass();
 			el.classList.add('active')
-			this.currentView = this.navLists[index].component;
-			this.nodata = this.navLists[index]
+			//this.currentView = this.navLists[index].component;
+			this.defaultdata = this.navLists[index]
+			//console.log(this.nodata)
 		},
 		clearClass() {
 			var navParent = document.getElementsByClassName('panelNav')[0];
@@ -94,18 +94,9 @@ export default {
 </script>
 
 <style>
-.panelNav{
-	background-color: #fff;
-}
+.panelNav{	background-color: #fff;}
 .panelNav li{width:114px;display: inline-block;text-align: center;}
 .panelNav a{margin:0 auto;line-height: 40px;width: 48px;display: block;color:#333;font-size: 16px;border-bottom: 4px solid transparent}
 .panelNav a.active{border-bottom: 4px solid #ff6666;}
-.user-list {
-    max-width: 960px;
-    margin: 0 auto;
-    margin-top: 20px;
-    position: relative;
-    min-height: 300px;
-    margin-bottom: 80px;
-}
+.user-list {    max-width: 960px;   margin: 0 auto;    margin-top: 20px;    position: relative;   min-height: 300px;    margin-bottom: 80px;}
 </style>
