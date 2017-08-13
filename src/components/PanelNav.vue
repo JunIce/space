@@ -69,6 +69,7 @@ export default {
 		Smark
 	},
 	mounted(){
+		console.log(app)
 		var navParent = document.getElementsByClassName('panelNav')[0];
 		var child = navParent.childNodes[0].childNodes[0];
 		this.tabnav(child,0)
@@ -77,9 +78,7 @@ export default {
 		tabnav(el, index){
 			this.clearClass();
 			el.classList.add('active')
-			//this.currentView = this.navLists[index].component;
 			this.defaultdata = this.navLists[index]
-			//console.log(this.nodata)
 		},
 		clearClass() {
 			var navParent = document.getElementsByClassName('panelNav')[0];

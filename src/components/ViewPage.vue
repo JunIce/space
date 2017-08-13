@@ -7,7 +7,6 @@ export default {
 		AddPage
 	},
 	render(h) {		
-		console.log(this.defaultdata)
 		return h(AddPage ,{
 			props: {
 				someProps: this.defaultdata
