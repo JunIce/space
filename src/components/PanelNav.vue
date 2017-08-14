@@ -12,60 +12,39 @@
 
 <script>
 import ViewPage from '@/components/ViewPage'
-// import Follow from '@/components/Follow'
-// import Fans from '@/components/Fans'
-// import Album from '@/components/Album'
-// import Photo from '@/components/Photo'
-// import Asset from '@/components/Asset'
+
 
 import Smark from '@/components/Smark'
 
 export default {
+	props:['detail'],
 	data(){
 		return{
-			defaultIndex: 0,
 			navLists:[
 			{
 				navname : '标签',
-				component : 'view-page',
-				title:'暂时没有关注的标签~~',
-				innerText : '添加标签'
+				component : 'tags'
 			},{
 				navname : '关注',
 				component : 'follow',
-				title:'暂时没有关注的标签~~',
-				innerText : '添加关注'
 			},{
 				navname : '粉丝',
-				component : 'fans',
-				title:'暂时没有关注的标签~~',
-				innerText : '添加粉丝'
+				component : 'fans'
 			},{
 				navname: '专辑',
-				component : 'album',
-				title:'暂时没有关注的标签~~',
-				innerText : '添加关注'
+				component : 'album'
 			},{
 				navname : '图片',
-				component : 'photo',
-				title:'暂时没有关注的标签~~',
-				innerText : '添加图片'
+				component : 'photo'
 			},{
 				navname: '留言',
-				component : 'asset',
-				title:'暂时没有关注的标签~~',
-				innerText : '添加留言'
+				component : 'asset'
 			}],
 			defaultdata : {}
 		}
 	},
 	components:{
 		ViewPage,
-		// Follow,
-		// Fans,
-		// Album,
-		// Photo,
-		// Asset,
 		Smark
 	},
 	mounted(){
@@ -77,7 +56,8 @@ export default {
 		tabnav(el, index){
 			this.clearClass();
 			el.classList.add('active')
-			this.defaultdata = this.navLists[index]
+			this.defaultdata = this.navLists[index];
+			this.defaultdata['data'] = app['detail'][this.navLists[index]['component']]
 		},
 		clearClass() {
 			var navParent = document.getElementsByClassName('panelNav')[0];
