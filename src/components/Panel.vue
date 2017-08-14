@@ -2,11 +2,11 @@
   <div class="panelsUser cl">
         <div class="user">
           <div class="panels-user-head">
-            <img src="http://img.reretu.com/2017/07/14/f4f77911b0dd157c_150x150.jpg" alt="">
+            <img :src="this.userprofile.userpic" alt="">
           </div>
           <div class="panels-user-info">
-            <h1>王者</h1><i class="user-sex male"></i>
-            <span>110100</span>
+            <h1>{{this.userprofile.username}}</h1><i class="user-sex male"></i>
+            <span>{{this.userprofile.email}}</span>
             <span class="user-psign">人啊</span>
           </div>
         </div>
@@ -23,10 +23,10 @@
 
 <script>
 export default {
-  name: 'hello',
+  name: 'Panel',
+  props:['userprofile'],
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
     }
   }
 }

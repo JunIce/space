@@ -69,7 +69,6 @@ export default {
 		Smark
 	},
 	mounted(){
-		console.log(app)
 		var navParent = document.getElementsByClassName('panelNav')[0];
 		var child = navParent.childNodes[0].childNodes[0];
 		this.tabnav(child,0)

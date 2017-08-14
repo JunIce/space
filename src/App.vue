@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <panel></panel>
-    <panelnav></panelnav>
+    <panel :userprofile="userprofile"></panel>
+    <panelnav :detail="userdetail"></panelnav>
   </div>
 </template>
 
@@ -12,6 +12,16 @@ import PanelNav from '@/components/PanelNav'
 
 export default {
   name: 'app',
+  data(){
+    return{
+      userprofile:{},
+      userdetail:{}
+    }
+  },
+  mounted(){
+    this.userprofile = app['userprofile'];
+    this.userdetail = app['detail'];
+  },
   components:{
      'panel' : Panel,
      'panelnav' : PanelNav
