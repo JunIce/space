@@ -23,12 +23,11 @@ export default {
 	render(h) {		
 		var component = this.defaultdata['component'];
 		var data = this.defaultdata['data'];
-		console.log(typeof data)
 		if(typeof data == 'object') {
-			console.log(this.firstUpperCase(component))
+			
 			return h(this.firstUpperCase(component) ,{
 				props: {
-					someProps: data
+					data: data
 				}
 			})
 		}else{
