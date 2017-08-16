@@ -1,5 +1,6 @@
 <script>
 import PubRecTag from '@/components/PubRecTag'
+
     export default{
         name : 'Smark',
         data(){
@@ -11,9 +12,7 @@ import PubRecTag from '@/components/PubRecTag'
             PubRecTag
         },
         mounted(){
-            var showTips = document.getElementById('showTips');
-            showTips.style.width = document.body.clientWidth + 'px';
-            showTips.style.height = document.body.clientHeight+ 'px';
+            
         },
         render(h) {
             var bg = h('div',{

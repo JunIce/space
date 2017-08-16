@@ -15,11 +15,15 @@
 				</ul>
 
 			</div>
+			<i class="box-close" @click="closeBox()"></i>
 		</div>
 	</div>
 </template>
 
 <script>
+
+import bus from '@/components/bus'
+
 export default{
 	mounted(){
 		this.preventScroll()
@@ -32,13 +36,21 @@ export default{
 			var boxCHeight = box.clientHeight;
 			var boxtop = box.offsetTop;
 			var boxleft = box.offsetLeft;
-			console.log(boxtop,boxleft)
 
+
+			var userListTop = document.getElementsByClassName('user-list')[0].offsetTop;
+
+			box.style.left = (960 - boxCWidth)/2 + 'px';
+			box.style.top = (this.winSize.height - boxCHeight)/2 - userListTop + this.scrollTop + 'px';
 		},
 		preventScroll(){
-			var scrollTop = document.body.scrollTop;
-			//ddocument.body.classList.add('noscroll')
-			//document.body.style.top = -scrollTop + 'px';
+			document.body.classList.add('noscroll')
+			document.body.style.top = -this.scrollTop + 'px';
+		},
+		closeBox(){
+			bus.$emit('closeBox',false)
+			document.body.classList.remove('noscroll')
+			document.body.style.top = this.scrollTop + 'px';
 		}
 	},
 	computed:{
@@ -47,6 +59,9 @@ export default{
 				width : document.documentElement.clientWidth,
 				height : document.documentElement.clientHeight
 			}
+		},
+		scrollTop(){
+			return document.body.scrollTop;
 		}
 	}
 }
@@ -103,5 +118,15 @@ cursor: pointer;
 .tagsList li{
 	width: 25%;
 	box-sizing: border-box;
+}
+.box-close{
+	width: 16px;
+	height: 16px;
+	background-image: url(../assets/close_16.png);
+	display: inline-block;
+	position: absolute;
+	top:12px;
+	right: 12px;
+	cursor:pointer;
 }
 </style>

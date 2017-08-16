@@ -1,4 +1,5 @@
 <template>
+    <div>
 		<ul class="tagsBox">
 			<li 
 			v-for="(tag,index) in tagsList" 
@@ -17,24 +18,30 @@
 				@click="showMarsk"
 				></li>
 			</template>
+			
+		</ul>
 			<template v-if="marsk">
 				<smark></smark>
 			</template>
-		</ul>
+		</div>
 </template>
 <script>
 import Smark from '@/components/Smark'
+import bus from '@/components/bus'
 
 export default {
 	name:'Tags',
 	props:['data'],
 	data(){
 		return{    
-		    marsk : true        
+		    marsk : false        
 		}
 	},
 	mounted(){
-		console.log(this.data)
+		console.log(bus)
+		bus.$on('closeBox',function(data) {
+			console.log(data)
+		})
 	},
 	components:{
 		Smark
@@ -51,6 +58,9 @@ export default {
 		},
 		rmTag(e,index){
 
+		},
+		closeBox(data){
+			console.log(data)
 		}
 	},
 	computed:{
