@@ -1,14 +1,35 @@
-<template>
-	<div id="showTips">
-		<div class="bg-color"></div>
-	</div>
-</template>
+<script>
+import PubRecTag from '@/components/PubRecTag'
+    export default{
+        name : 'Smark',
+        data(){
+            return{
 
+            }
+        },
+        components:{
+            PubRecTag
+        },
+        mounted(){
+            var showTips = document.getElementById('showTips');
+            showTips.style.width = document.body.clientWidth + 'px';
+            showTips.style.height = document.body.clientHeight+ 'px';
+        },
+        render(h) {
+            var bg = h('div',{
+                    attrs: {
+                        class:'bg-color'
+                    }
+                });
+            return h('div',{
+                        attrs: {
+                            id : 'showTips'
+                        }
+                },[bg,h(PubRecTag)])
+        }
+    }
+</script>
 <style scoped>
-	#showTips {
-	    width: 100%;
-	    height: 100%;
-	}
 	.bg-color {
     position: fixed;
     background-color: #000;

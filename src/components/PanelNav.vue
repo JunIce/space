@@ -13,9 +13,6 @@
 <script>
 import ViewPage from '@/components/ViewPage'
 
-
-import Smark from '@/components/Smark'
-
 export default {
 	props:['detail'],
 	data(){
@@ -45,7 +42,6 @@ export default {
 	},
 	components:{
 		ViewPage,
-		Smark
 	},
 	mounted(){
 		var navParent = document.getElementsByClassName('panelNav')[0];

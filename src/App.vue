@@ -33,6 +33,7 @@ export default {
 body{
   background-color: #f6f6f6;
 }
+body.noscroll{position:fixed;width:100%}
 a{text-decoration: none;}
 ul,li,p,a{padding: 0;margin:0;}
 li{list-style: none}
