@@ -8,8 +8,20 @@
 					<li><span>123</span></li>
 					<li><span>123</span></li>
 					<li><span>123</span></li>
-
+					<li><span>123</span></li>
+					<li><span>123</span></li>
+					<li><span>123</span></li>
+					<li><span>123</span></li>	
 				</ul>
+
+				<div class="album-create-text">
+					<div class="album-text">
+					<input 
+					type="text" 
+						
+					/></div>
+					<div class="album-btn"><button>创建</button></div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -17,14 +29,93 @@
 
 <script>
 	export default{
-		name : 'addalbum'
+		name : 'addalbum',
+		data(){
+			return{
+				albumList : []
+			}
+		},
+		created(){
+			if($user.userid) {
+				this.$http.get('/api/getUserAlbumList/?userid='+ $user.userid)
+				.then(res => {
+					var data = res.body;
+					this.albumList = data;
+				})
+
+			}
+		},
+		mounted(){
+			this.defaultCss()
+		},
+		methods:{
+			defaultCss(){
+				var box = document.getElementsByClassName('albumbox')[0];
+				var boxCWidth = box.clientWidth;
+				var boxCHeight = box.clientHeight;
+				var boxtop = box.offsetTop;
+				var boxleft = box.offsetLeft;
+
+				var userListTop = document.getElementsByClassName('user-list')[0].offsetTop;
+
+				box.style.left = (960 - boxCWidth)/2 + 'px';
+				box.style.top = (this.winSize.height - boxCHeight)/2 - userListTop  + 'px';
+			},
+		},
+		computed:{
+			winSize(){
+			return {
+				width : document.documentElement.clientWidth,
+				height : document.documentElement.clientHeight
+			}
+		},
+		}
 	}
 </script>
 
 <style scoped>
+.album-btn{
+	width: 14%;
+}
+.album-btn button{
+	width: 100%;
+	background-color: #ff6666;
+	color:#fff;
+	line-height: 30px;
+	outline: none;
+	border: none;
+	font-size: 3px;
+	border-radius: 4px;
+	cursor: pointer;	
+}
+.album-text{
+	width: 80%;
+	box-sizing:border-box;
+	background-color: #fff;
+	border:1px solid #999;
+	border-radius: 3px;
+	overflow: hidden;
+}
+.album-text input{
+	line-height: 24px;
+	width: 100%;
+	border:none;
+	outline:none;
+	padding: 4px 8px;
+	box-sizing:border-box;
+}
+.album-create-text{
+	background-color:#eee; 
+	padding:10px 0;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	display: flex;
+	justify-content:space-around;
+}
 .albumbox{
     position: absolute;
-	background-color: #f8f8f8;
+	background-color: #fff;
     border-radius: 4px;
     z-index: 100;
     width: 540px;
@@ -56,16 +147,23 @@
 	border:1px solid #333;
 	border-radius: 5px;
 	height: 180px;
+	overflow: hidden;
+	position: relative;
 }
 .alist{
 	overflow-y: scroll;
     height: 126px;
     color: #666;
+    font-size: 14px;
 }
 .alist li{
     line-height: 32px;
     display: block;
     text-indent: 8px;
     cursor: pointer;
+    text-align: left;
+}
+.alist li:hover{
+	background-color: #eee
 }
 </style>
