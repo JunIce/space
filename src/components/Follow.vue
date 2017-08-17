@@ -1,30 +1,52 @@
 <template>
-	<ul class="user-fans">
-		<li v-for="(follower,index) in followData">
-			<div class="rank-info">
-				<a :href="'/user/'+ follower.userid ">
-				<img :src="follower.userpic">
-				</a>
-				<div class="fans-detail">
-					<p class="fans-username">{{follower.username}}
-					<i class="user-sex" :class="follower.sex"></i>
-					</p>
-					<span class="fans-say">{{follower.sign}}</span>
-				</div>
-			</div>
+	
+	<div>
+		
+		<template v-if="followData.length > 0">
+			<ul class="user-fans">
+				<li v-for="(follower,index) in followData">
+					<div class="rank-info">
+						<a :href="'/user/'+ follower.userid ">
+						<img :src="follower.userpic">
+						</a>
+						<div class="fans-detail">
+							<p class="fans-username">{{follower.username}}
+							<i class="user-sex" :class="follower.sex"></i>
+							</p>
+							<span class="fans-say">{{follower.sign}}</span>
+						</div>
+					</div>
 
-			<a href="javascript:;" class="guanzhuBtn list-btn-margin" 
-			:class="{'has-done':follower.relationship}" :data-uid="follower.userid">{{follower.relationship? '已关注' : '关注'}}</a>				
-		</li>
-	</ul>
+					<a href="javascript:;" class="guanzhuBtn list-btn-margin" 
+					:class="{'has-done':follower.relationship}" 
+					:data-uid="follower.userid"
+					@click="userFollow($event)"
+					>{{follower.relationship? '已关注' : '关注'}}</a>				
+				</li>
+			</ul>
+		</template>
+
+		<template v-else>
+				<AddPage :nomessage="nofollewer"></AddPage>
+		</template>
+	</div>
 </template>
 
 <script>
+
+import AddPage from '@/components/AddPage'
 	export default {
 		name:'Follow',
 		props:['data'],
-		mounted(){
-			console.log(this.data)
+		data(){
+			return{
+				nofollewer:{
+					type: 'follow',
+			    	title:'去用户排行关注你感兴趣的人吧',
+			    	titleurl:'/rank',
+			    	btnName:'用户排行'
+				}
+			}
 		},
 		computed:{
 			followData(){
@@ -46,6 +68,9 @@
 
 				return this.data
 			}
+		},
+		components:{
+			AddPage,
 		}
 	}
 </script>

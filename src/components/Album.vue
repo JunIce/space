@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<template v-if="marsk">
+			<smark :component="addAlbum"></smark>
+		</template>
 		<div class="userCol-nav">
 			<template v-for="(btn,index) in btnList">
 		        <a href="javascript:;" class="userCol" :class="{userSect:index===number}" @click="selectBtn($event,index)">{{btn}}</a>
@@ -7,7 +10,19 @@
   		</div>
 	
 		<div>
+
+		<template v-if="albumData.length > 0">
 			<ul class="user-album-list">
+			<template v-if=" isSelf && number == 0">
+				<li class="album">
+					<div class="album-bg">
+						<div class="c-albumBtn" @click="showMarsk()">
+							<i class="add-Album"></i>
+							<p class="createAlbum">创建专辑</p>
+		                </div>
+					</div>
+				</li>
+			</template>
 				<li class="album" v-for="album in albumData">
 					<div class="album-bg">
 						<a :href="'/collection/'+ album.aid " target="_blank">
@@ -20,33 +35,44 @@
 		                </a>
 					</div>
 				</li>
-			<template v-if="number == 0">
-				<li class="album">
-					<div class="album-bg">
-						<div class="c-albumBtn">
-						<a href="/collection/87" target="_blank">
-							<i class="add-Album"></i>
-							<p class="createAlbum">创建专辑</p>
-		                </a>
-		                </div>
-					</div>
-				</li>
-			</template>
+			
 			</ul>
+			</template>
+
+			<template v-else>
+				<AddPage :nomessage="number == 0 ? noalbum : nofava "></AddPage>
+			</template>			
 		</div>
 	</div>
 </template>
 <script>
 import noPic from '@/assets/nopic.png'
+import AddPage from '@/components/AddPage'
+import Smark from '@/components/Smark'
+
 export default {
 	name:'Album',
 	props:['data'],
 	data(){
 		return{  
+			addAlbum: 'addAlbum',
+			marsk : false ,
 			noPic : noPic,
 			number: 0, // 默认开始
 			btnList : ['我创建的','我收藏的'],  
-			albumData : [],           
+			albumData : [], 
+			noalbum:{
+				title:'来创建你的第一个专辑吧',
+				type: 'album',
+		    	titleurl:'javascript:;',
+		    	btnName:'创建专辑'
+			},
+			nofava:{
+				title:'两手空空~~',
+				type: 'album',
+		    	titleurl:'',
+		    	btnName:''
+			}            
 		}
 	},
 	mounted(){
@@ -61,7 +87,11 @@ export default {
 			}else{
 				this.albumData = this.albumFava
 			}
-		}
+		},
+		showMarsk(){
+			this.marsk = true
+			//bus.$emit('userTags',this.data);
+		},
 	},
 	computed:{
 		albumFava(){
@@ -70,6 +100,13 @@ export default {
 		albumCreate(){
 			return this.data.create
 		},
+		isSelf(){
+			return app.userprofile.userid == $user.userid ? true : false;
+		}
+	},
+	components:{
+		AddPage,
+		Smark
 	}
 }
 </script>
@@ -81,7 +118,7 @@ export default {
 .userCol:last-child {border-radius:0 5px 5px 0}
 .userSect {background-color: #ff6666;color: #fff;}
 
-.user-album-list{display: flex;flex-wrap:wrap;width: 980px;margin-left: -10px;}
+.user-album-list{display: flex;flex-wrap:wrap;width: 980px;margin-left: -10px;margin-top: 10px;}
 .album{width:25%;padding:10px;box-sizing: border-box;}
 .album-bg{background-color:#fff;border-radius: 5px;overflow: hidden;padding:10px;height: 100%;box-sizing: border-box;}
 .album-titlepic{width: 100%;display: block;}
@@ -93,9 +130,9 @@ export default {
 .albumViewIco{background: url(../assets/view.png);background-size: 22px;}
 .album-detail span{font-size:14px;color:#ccc;margin:0 10px 0 4px;}
 
-.add-Album{background:url(../assets/plus.png) no-repeat; width: 64px;height: 64px;display: block;margin: auto;}
+.add-Album{background:url(../assets/plus.png) no-repeat; width: 64px;height: 64px;}
 .createAlbum{font-size:14px;color:#ccc;font-weight:400;padding:14px;}
 
-.c-albumBtn{display: flex;align-items:center;height: 100%;text-align: center;justify-content:center;}
+.c-albumBtn{display: flex;align-items:center;height: 100%;text-align: center;justify-content:center;flex-direction: column;cursor: pointer;}
 .c-albumBtn a{display: block;}
 </style>

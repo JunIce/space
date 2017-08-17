@@ -1,4 +1,3 @@
 import Vue from 'vue'
-
-console.log(Vue)
-export var bus = new Vue();
+// bus.js
+export default new Vue();

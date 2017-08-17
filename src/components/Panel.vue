@@ -7,15 +7,15 @@
           <div class="panels-user-info">
             <h1>{{this.userprofile.username}}</h1><i class="user-sex male"></i>
             <span>{{this.userprofile.email}}</span>
-            <span class="user-psign">人啊</span>
+            <span class="user-psign">{{this.userprofile.sign}}</span>
           </div>
         </div>
 
          <div class="userPageBtn">
-                            <a href="/e/member/EditInfo/" class="userInChg">修改资料</a>
-                            <div class="userHots">
-                <div class="fr"><span>关注</span><i>8</i></div>
-                <div class="fr"><span>粉丝</span><i>1</i></div>
+            <a href="/e/member/EditInfo/" class="userInChg">修改资料</a>
+              <div class="userHots">
+                <div class="fr"><span>关注</span><i>{{this.followers}}</i></div>
+                <div class="fr"><span>粉丝</span><i>{{this.fans}}</i></div>
               </div>
             </div>
       </div>
@@ -27,6 +27,14 @@ export default {
   props:['userprofile'],
   data () {
     return {
+    }
+  },
+  computed:{
+    followers(){
+        return app['detail'].follow.length
+    },
+    fans(){
+        return app['detail'].fans.length
     }
   }
 }

@@ -1,20 +1,25 @@
 <script>
 import PubRecTag from '@/components/PubRecTag'
+import AddAlbum from '@/components/AddAlbum'
+
 
     export default{
         name : 'Smark',
+        props:['component'],
         data(){
             return{
 
             }
         },
         components:{
-            PubRecTag
+            PubRecTag,
+            AddAlbum
         },
         mounted(){
             
         },
         render(h) {
+            var com = this.component
             var bg = h('div',{
                     attrs: {
                         class:'bg-color'
@@ -24,7 +29,7 @@ import PubRecTag from '@/components/PubRecTag'
                         attrs: {
                             id : 'showTips'
                         }
-                },[bg,h(PubRecTag)])
+                },[bg,h(com)])
         }
     }
 </script>

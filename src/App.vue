@@ -6,7 +6,7 @@
 </template>
 
 <script>
-
+import bus from '@/components/bus'
 import Panel from '@/components/Panel'
 import PanelNav from '@/components/PanelNav'
 
@@ -14,13 +14,33 @@ export default {
   name: 'app',
   data(){
     return{
-      userprofile:{},
-      userdetail:{}
     }
   },
   mounted(){
-    this.userprofile = app['userprofile'];
-    this.userdetail = app['detail'];
+      var self = this;
+
+      bus.$on('addTag',(data) => {
+        var tags = self.userdetail.tags ? self.userdetail.tags :[];
+          
+          tags.unshift(data)
+          console.log(self.userdetail)
+      })
+
+      bus.$on('rmTag',(data) => {
+          self.userdetail.tags.splice(data,1);
+      })
+
+  },
+  computed:{
+      appdata(){
+          return app;
+      },
+      userprofile(){
+         return this.appdata.userprofile;
+      },
+      userdetail(){
+         return this.appdata.detail;
+      }
   },
   components:{
      'panel' : Panel,

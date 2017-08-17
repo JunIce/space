@@ -1,6 +1,14 @@
 <template>
     <div>
+
+    <template v-if="tagsList.length > 0">
 		<ul class="tagsBox">
+			<template v-if="isSelf">
+				<li 
+				class="tag addBtn"
+				@click="showMarsk"
+				></li>
+			</template>
 			<li 
 			v-for="(tag,index) in tagsList" 
 			class="tag"
@@ -9,23 +17,24 @@
 			>
 				<a :href="tag.titleurl">{{tag.tagname}}</a>
 				<i class="rmTag"
+				   :id="'rm_'+ tag.tagid" 
 					@click="isSelf && rmTag($event,index)"
 				></i>
 			</li>
-			<template v-if="isSelf">
-				<li 
-				class="tag addBtn"
-				@click="showMarsk"
-				></li>
-			</template>
-			
 		</ul>
-			<template v-if="marsk">
-				<smark></smark>
-			</template>
-		</div>
+		
+	</template>
+	<template v-else>
+		<AddPage :nomessage="notags"></AddPage>
+	</template>
+
+	<template v-if="marsk">
+		<smark :component="addTag"></smark>
+	</template>
+</div>
 </template>
 <script>
+import AddPage from '@/components/AddPage'
 import Smark from '@/components/Smark'
 import bus from '@/components/bus'
 
@@ -33,22 +42,35 @@ export default {
 	name:'Tags',
 	props:['data'],
 	data(){
-		return{    
-		    marsk : false        
+		return{   
+			addTag: 'pubRecTag', 
+		    marsk : false ,
+		    notags : {
+		    	type: 'tag',
+		    	title:'暂时没有关注的标签~~',
+		    	titleurl:'javascript:;',
+		    	btnName:'添加标签'
+		    }
 		}
 	},
 	mounted(){
-		console.log(bus)
+		var self = this
 		bus.$on('closeBox',function(data) {
-			console.log(data)
+			self.marsk = false
+		})
+
+		bus.$on('nomessage_tag',function(data) {
+			self.showMarsk();
 		})
 	},
 	components:{
-		Smark
+		Smark,
+		AddPage
 	},
 	methods:{
 		showMarsk(){
 			this.marsk = true
+			bus.$emit('userTags',this.data);
 		},
 		showClose(e){
 			e.target.childNodes[2].style.display = 'block'
@@ -57,7 +79,14 @@ export default {
 			e.target.childNodes[2].style.display = 'none'
 		},
 		rmTag(e,index){
-
+			var id = e.target.id.match(/\d+/)[0];
+			this.$http.get('/api/cancalSub/?tagid='+id)
+				.then(res => {
+					var data = res.body;
+					if(res.status == 1) {
+						bus.$emit('rmTag',index)
+					}
+				})
 		},
 		closeBox(data){
 			console.log(data)
@@ -65,11 +94,12 @@ export default {
 	},
 	computed:{
 		tagsList(){
-			this.data.map(function(i){
+			var data = this.data || [];
+			data.map(function(i){
 				i['titleurl'] = '/label/'+ i.tagid;
 			})
 
-			return this.data
+			return data
 		},
 		isSelf(){
 			return app.userprofile.userid == $user.userid ? true : false;

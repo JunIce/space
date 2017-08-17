@@ -5,13 +5,11 @@
 
 			<div >
 				<ul class="tagsList">
-					<li><span class="tag">头像</span></li>
-					<li><span class="tag">头像</span></li>
-					<li><span class="tag">头像</span></li>
-					<li><span class="tag">头像</span></li>
-					<li><span class="tag">头像</span></li>
-					<li><span class="tag">头像</span></li>
-					<li><span class="tag">头像</span></li>
+					<li 
+					v-for="tag in publicTags" 
+					
+					
+					><span :id="'tag'+ tag.tagid" class="tag" @click="userSelectTag($event)" >{{tag.tagname}}</span></li>
 				</ul>
 
 			</div>
@@ -25,18 +23,51 @@
 import bus from '@/components/bus'
 
 export default{
+	data(){
+		return{
+			userTags:[],
+			publicTags : []
+		}
+	},
+	created(){
+		var self = this
+		this.$http.get("http://dev.reretu.com:8024/api/getTags/")
+		 .then(res => {
+		 	self.publicTags = res.body;
+		 })
+	},
 	mounted(){
-		this.preventScroll()
+		var self = this
+		bus.$on('userTags',(data)=>{
+			self.userTags = data
+		})
+	},
+	updated(){
 		this.defaultCss()
+		this.preventScroll()
 	},
 	methods:{
+		userSelectTag(e){
+			var id = e.target.id.match(/\d+/g)[0];
+			var self = this
+			this.$http.get('http://dev.reretu.com:8024/api/subscribe/?tagid='+id)
+			  .then(res => {
+			  	var data = res.body
+			  		if(data.status == 1) {
+			  			e.target.classList.add('active');
+			  			bus.$emit('addTag' ,{
+			  				tagname : e.target.innerText,
+			  				tagid : id
+			  			})
+			  		}
+			  })
+		},
 		defaultCss(){
 			var box = document.getElementsByClassName('tagBox')[0];
 			var boxCWidth = box.clientWidth;
 			var boxCHeight = box.clientHeight;
 			var boxtop = box.offsetTop;
 			var boxleft = box.offsetLeft;
-
 
 			var userListTop = document.getElementsByClassName('user-list')[0].offsetTop;
 
@@ -62,7 +93,16 @@ export default{
 		},
 		scrollTop(){
 			return document.body.scrollTop;
+		},
+		afterData(){
+
+			this.publicTags.map(function(i){
+				console.log(i)
+			})
 		}
+	},
+	watch :{
+		
 	}
 }
 
@@ -129,4 +169,5 @@ cursor: pointer;
 	right: 12px;
 	cursor:pointer;
 }
+.tagsList span.active{background-color:#ff6666;color:#fff;}
 </style>

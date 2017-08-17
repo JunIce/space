@@ -1,28 +1,42 @@
 
 <script>
-
+import bus from '@/components/bus'
 export default {
-	props:['someProps'],
+	props:['nomessage'],
 	render(h) {
+		var isSelf = this.isSelf();
 		var p = h('p',{
 						domProps:{
-							innerHTML: this.someProps.title
+							innerHTML: this.nomessage.title
 						},
 					    attrs: {
 						    class : 'no-tag-title'
 						}
 					});
-		var a = h('a',{
+		if(isSelf){
+			var a = h('a',{
 					domProps:{
-						innerHTML: this.someProps.innerText
+						innerHTML: this.nomessage.btnName
 					},
 				    attrs: {
-				    	href : 'javascript:;',
+				    	href : this.nomessage.titleurl,
 					    class : 'add-tags-btn'
+					},
+					on:{
+						click:this.clickHandler
 					}
 				})
-
+		}
+		
 		return h('div',{},[p, a])
+	},
+	methods:{
+		isSelf(){
+			return app.userprofile.userid == $user.userid ? true : false;
+		},
+		clickHandler(){
+			bus.$emit('nomessage_'+ this.nomessage.type, true)
+		}
 	}
 }
 </script>

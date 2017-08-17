@@ -1,6 +1,6 @@
 
 <script>
-import AddPage from '@/components/AddPage'
+
 import Follow from '@/components/Follow'
 import Tags from '@/components/Tags'
 
@@ -12,7 +12,7 @@ import Asset from '@/components/Asset'
 export default {
 	props: ['defaultdata'],
 	components:{
-		AddPage,
+		
 		Tags,
 		Follow,
 		Fans,
@@ -21,25 +21,19 @@ export default {
 		Asset,
 	},
 	render(h) {		
-		var component = this.defaultdata['component'];
+		var component = this.firstUpperCase(this.defaultdata['component']);
 		var data = this.defaultdata['data'];
-		if(typeof data == 'object') {
-			
-			return h(this.firstUpperCase(component) ,{
+		
+			return h(component ,{
 				props: {
 					data: data
 				}
 			})
-		}else{
-			return h(AddPage ,{
-				props: {
-					someProps: this.defaultdata
-				}
-			})
-		}		
+		
 	},
 	methods:{
 	  firstUpperCase(str) {
+	  	var str = str || '';
 		  return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
 		}
 	}
