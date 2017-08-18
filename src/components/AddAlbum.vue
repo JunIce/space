@@ -17,22 +17,29 @@
 				<div class="album-create-text">
 					<div class="album-text">
 					<input 
-					type="text" 
-						
+						type="text" 
+						v-model="albumname"
+						@keydown.enter="cAlbum"
 					/></div>
-					<div class="album-btn"><button>创建</button></div>
+					<div class="album-btn">
+						<button @click="cAlbum">创建</button>
+					</div>
 				</div>
 			</div>
 		</div>
+		<i class="box-close" @click="closeBox()"></i>
 	</div>
 </template>
 
 <script>
+import bus from '@/components/bus'
+
 	export default{
 		name : 'addalbum',
 		data(){
 			return{
-				albumList : []
+				albumList : [],
+				albumname :''
 			}
 		},
 		created(){
@@ -41,14 +48,16 @@
 				.then(res => {
 					var data = res.body;
 					this.albumList = data;
-				})
-
+				})	
 			}
 		},
 		mounted(){
 			this.defaultCss()
 		},
 		methods:{
+			cAlbum(){
+				console.log(this.albumname)
+			},
 			defaultCss(){
 				var box = document.getElementsByClassName('albumbox')[0];
 				var boxCWidth = box.clientWidth;
@@ -61,6 +70,9 @@
 				box.style.left = (960 - boxCWidth)/2 + 'px';
 				box.style.top = (this.winSize.height - boxCHeight)/2 - userListTop  + 'px';
 			},
+			closeBox(){
+				bus.$emit('closeAlbum',false)
+			}
 		},
 		computed:{
 			winSize(){
@@ -86,7 +98,8 @@
 	border: none;
 	font-size: 3px;
 	border-radius: 4px;
-	cursor: pointer;	
+	cursor: pointer;
+	font-size: 12px;	
 }
 .album-text{
 	width: 80%;
@@ -165,5 +178,15 @@
 }
 .alist li:hover{
 	background-color: #eee
+}
+.box-close{
+	width: 16px;
+	height: 16px;
+	background-image: url(../assets/close_16.png);
+	display: inline-block;
+	position: absolute;
+	top:12px;
+	right: 12px;
+	cursor:pointer;
 }
 </style>

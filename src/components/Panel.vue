@@ -31,10 +31,11 @@ export default {
   },
   computed:{
     followers(){
-        return app['detail'].follow.length
+    
+        return app['detail'].follow ? app['detail'].follow.length : 0
     },
     fans(){
-        return app['detail'].fans.length
+        return app['detail'].fans ? app['detail'].fans.length : 0
     }
   }
 }

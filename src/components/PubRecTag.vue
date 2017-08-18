@@ -44,7 +44,7 @@ export default{
 	},
 	updated(){
 		this.defaultCss()
-		this.preventScroll()
+		//this.preventScroll()
 	},
 	methods:{
 		userSelectTag(e){
@@ -80,8 +80,7 @@ export default{
 		},
 		closeBox(){
 			bus.$emit('closeBox',false)
-			document.body.classList.remove('noscroll')
-			document.body.style.top = this.scrollTop + 'px';
+			
 		}
 	},
 	computed:{

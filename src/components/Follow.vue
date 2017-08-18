@@ -50,7 +50,9 @@ import AddPage from '@/components/AddPage'
 		},
 		computed:{
 			followData(){
-				this.data.map(function(i){
+				var data = this.data || [];
+
+				data.map(function(i){
 					//
 					if(i.relationship == '0'){
 						i.relationship = false
@@ -66,7 +68,7 @@ import AddPage from '@/components/AddPage'
 					
 				})
 
-				return this.data
+				return data
 			}
 		},
 		components:{

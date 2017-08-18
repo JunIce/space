@@ -25,6 +25,14 @@ import AddAlbum from '@/components/AddAlbum'
                         class:'bg-color'
                     }
                 });
+            var close = h('i',{
+                on:{
+                    click:this.closeBox
+                },
+                attrs:{
+                    class:"box-close"
+                }
+            });
             return h('div',{
                         attrs: {
                             id : 'showTips'

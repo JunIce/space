@@ -49,6 +49,8 @@
 import noPic from '@/assets/nopic.png'
 import AddPage from '@/components/AddPage'
 import Smark from '@/components/Smark'
+import bus from '@/components/bus'
+
 
 export default {
 	name:'Album',
@@ -76,8 +78,14 @@ export default {
 		}
 	},
 	mounted(){
+		var self = this;
 		this.number = 0
 		this.albumData = this.albumCreate
+
+		bus.$on('closeAlbum',function(data) {
+
+			self.marsk = data
+		})
 	},
 	methods:{
 		selectBtn(e, index){
@@ -95,10 +103,10 @@ export default {
 	},
 	computed:{
 		albumFava(){
-			return this.data.favorite
+			return this.data.favorite || []
 		},
 		albumCreate(){
-			return this.data.create
+			return this.data.create || []
 		},
 		isSelf(){
 			return app.userprofile.userid == $user.userid ? true : false;
