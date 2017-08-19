@@ -18,10 +18,10 @@
 					</div>
 
 					<a href="javascript:;" class="guanzhuBtn list-btn-margin" 
-					:class="{'has-done':follower.relationship}" 
+					:class="{'has-done':filter(follower.relationship)}" 
 					:data-uid="follower.userid"
 					@click="userFollow($event)"
-					>{{follower.relationship? '已关注' : '关注'}}</a>				
+					>{{filter(follower.relationship)? '已关注' : '关注'}}</a>				
 				</li>
 			</ul>
 		</template>
@@ -56,6 +56,9 @@ import AddPage from '@/components/AddPage'
 			AddPage,
 		},
 		methods:{
+			filter(val){
+				return val == 0 ? false : true;
+			},
 			userFollow(e){
 				var uid = e.target.getAttribute('data-uid');
 				var self = this

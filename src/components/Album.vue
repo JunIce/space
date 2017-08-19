@@ -66,7 +66,6 @@ export default {
 	data(){
 		return{  
 			currentPage: 1,
-		 	pageLine :7, // 每页显示条数
 			addAlbum: 'addAlbum',
 			marsk : false ,
 			noPic : noPic,
@@ -129,6 +128,9 @@ export default {
 		},
 		hasPage(){
 			return parseInt(this.albumData.length/this.pageLine)
+		},
+		pageLine(){
+			return this.isSelf ? 7 : 8;
 		}
 	},
 	components:{

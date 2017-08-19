@@ -16,7 +16,7 @@
 				</div>
 
 				<a href="javascript:;" class="guanzhuBtn list-btn-margin" 
-				:class="{'has-done':fan.relationship}" :data-uid="fan.userid" @click="userFollow($event)">{{fan.relationship? '已关注' : '关注'}}</a>				
+				:class="{'has-done':filter(fan.relationship)}" :data-uid="fan.userid" @click="userFollow($event)">{{filter(fan.relationship) ? '已关注' : '关注'}}</a>				
 			</li>
 		</ul>
 	</template>
@@ -51,6 +51,9 @@ export default {
 			AddPage,
 		},
 		methods:{
+			filter(val){
+				return val == 0 ? false : true;
+			},
 			userFollow(e){
 				var uid = e.target.getAttribute('data-uid');
 				var self = this
