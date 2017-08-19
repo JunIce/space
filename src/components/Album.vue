@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<template v-if="marsk">
-			<smark :component="addAlbum"></smark>
+			<smark :component="addAlbum" :propsdata="albumCreate"></smark>
 		</template>
 		<div class="userCol-nav">
 			<template v-for="(btn,index) in btnList">
@@ -23,7 +23,7 @@
 					</div>
 				</li>
 			</template>
-				<li class="album" v-for="album in albumData">
+				<li class="album" v-for="album in renderData">
 					<div class="album-bg">
 						<a :href="'/collection/'+ album.aid " target="_blank">
 							<img :src="album.album_titlepic == null ? noPic : album.album_titlepic" :alt="album.album_name" class="album-titlepic">
@@ -41,7 +41,14 @@
 
 			<template v-else>
 				<AddPage :nomessage="number == 0 ? noalbum : nofava "></AddPage>
-			</template>			
+			</template>	
+			<template v-if="hasPage >= 1">
+				<page 
+				:total="albumData.length" 
+				:display = "pageLine" 
+				:current-page='currentPage' 
+				@pagechange="pagechange"></page>
+			</template>		
 		</div>
 	</div>
 </template>
@@ -50,6 +57,7 @@ import noPic from '@/assets/nopic.png'
 import AddPage from '@/components/AddPage'
 import Smark from '@/components/Smark'
 import bus from '@/components/bus'
+import Page from '@/components/Page'
 
 
 export default {
@@ -57,6 +65,8 @@ export default {
 	props:['data'],
 	data(){
 		return{  
+			currentPage: 1,
+		 	pageLine :7, // 每页显示条数
 			addAlbum: 'addAlbum',
 			marsk : false ,
 			noPic : noPic,
@@ -81,9 +91,8 @@ export default {
 		var self = this;
 		this.number = 0
 		this.albumData = this.albumCreate
-
+		
 		bus.$on('closeAlbum',function(data) {
-
 			self.marsk = data
 		})
 	},
@@ -96,9 +105,11 @@ export default {
 				this.albumData = this.albumFava
 			}
 		},
+		pagechange(data){
+			this.currentPage = data;
+		},
 		showMarsk(){
 			this.marsk = true
-			//bus.$emit('userTags',this.data);
 		},
 	},
 	computed:{
@@ -110,11 +121,20 @@ export default {
 		},
 		isSelf(){
 			return app.userprofile.userid == $user.userid ? true : false;
+		},
+		renderData(){
+			var end = this.pageLine * this.currentPage;
+			var start = this.pageLine * (this.currentPage - 1)
+			return this.albumData.slice(start, end)
+		},
+		hasPage(){
+			return parseInt(this.albumData.length/this.pageLine)
 		}
 	},
 	components:{
 		AddPage,
-		Smark
+		Smark,
+		Page
 	}
 }
 </script>

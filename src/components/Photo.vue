@@ -5,7 +5,8 @@
 	        <a href="javascript:;" class="userCol" :class="{userSect:index===number}" @click="selectBtn($event,index)">{{btn}}</a>
 	    </template>    
   		</div>
-
+		
+		<template v-if="photoData.length > 0">
   		<div >
   			<ul class="user-photo-list">
   				<li class="photo" v-for="photo in renderData">  
@@ -15,6 +16,11 @@
 	            </li>
   			</ul>
   		</div>
+  		</template>
+
+		<template v-else>
+			<AddPage :nomessage="number == 0 ? nofava : nopub "></AddPage>
+		</template>	
   		<template v-if="hasPage > 1">
 			<page 
 			:total="photoData.length" 
@@ -27,6 +33,8 @@
 <script>
 
 import Page from '@/components/Page'
+import AddPage from '@/components/AddPage'
+
 export default {
 	name:'Photo',
 	props:['data'],
@@ -36,7 +44,19 @@ export default {
 			 btnList:['我收藏的','我发布的'],
 		 	 photoData:[],
 		 	 currentPage: 1,
-		 	 pageLine :1, // 每页显示条数
+		 	 pageLine :12, // 每页显示条数
+		 	 nopub:{
+				title:'去发布你的图片吧~~',
+				type: 'photo',
+		    	titleurl:'/add',
+		    	btnName:'发布图片'
+			},
+			nofava:{
+				title:'没有发现~~',
+				type: 'photo',
+		    	titleurl:'',
+		    	btnName:''
+			}  
 		}
 	},
 	mounted(){
@@ -63,13 +83,12 @@ export default {
 	},
 	computed:{
 		photoFava(){
-			return this.data.fava
+			return this.data.fava || []
 		},
 		photoPub(){
-			return this.data.public
+			return this.data.public || []
 		},
 		renderData(){
-			console.log(this.currentPage)
 			var end = this.pageLine * this.currentPage;
 			var start = this.pageLine * (this.currentPage - 1)
 			return this.photoData.slice(start, end)
@@ -79,7 +98,8 @@ export default {
 		}
 	},
 	components:{
-		Page
+		Page,
+		AddPage
 	},
 }
 </script>

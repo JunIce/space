@@ -5,7 +5,7 @@ import AddAlbum from '@/components/AddAlbum'
 
     export default{
         name : 'Smark',
-        props:['component'],
+        props:['component','propsdata'],
         data(){
             return{
 
@@ -37,7 +37,11 @@ import AddAlbum from '@/components/AddAlbum'
                         attrs: {
                             id : 'showTips'
                         }
-                },[bg,h(com)])
+                },[bg,h(com,{
+                    props:{
+                        data:this.propsdata
+                    }
+                })])
         }
     }
 </script>

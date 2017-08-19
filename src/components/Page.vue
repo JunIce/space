@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <div>
     <ul class="pagination">
       <li class="pre" :class="{'disabled': current == 1}" @click="setCurrent(current - 1)"></li>
      
@@ -9,7 +9,7 @@
       
       <li class="aft" :class="{'disabled': current == page}" @click="setCurrent(current + 1)"></li>
     </ul>
-  </nav>
+  </div>
 </template>
 
 <script>
@@ -20,7 +20,6 @@
       }
     },
     mounted(){
-    	console.log(this.total,this.display,this.currentPage)
     },
     props: {
       total: {// 数据总条数
@@ -96,7 +95,7 @@
 </script>
 
 <style scoped>
-nav{
+div{
 	position: absolute;
     bottom: 0;
     width: 100%;
@@ -109,6 +108,10 @@ nav{
     margin-right: 16px;
 	border-radius: 50%;
 	cursor: pointer;
+	-moz-user-select: none; /*mozilar*/
+	-webkit-user-select: none; /*webkit*/
+	-ms-user-select: none; /*IE*/
+	user-select: none;
 }
 li a{display: block;color: #646363;}
 li:hover{    background: #aaa;color: #fff;}

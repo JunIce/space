@@ -29,7 +29,7 @@
 	</template>
 
 	<template v-if="marsk">
-		<smark :component="addTag"></smark>
+		<smark :component="addTag" :propsdata="tagsList"></smark>
 	</template>
 </div>
 </template>
@@ -50,7 +50,8 @@ export default {
 		    	title:'暂时没有关注的标签~~',
 		    	titleurl:'javascript:;',
 		    	btnName:'添加标签'
-		    }
+		    },
+		    tagsList : this.data
 		}
 	},
 	mounted(){
@@ -58,7 +59,6 @@ export default {
 		bus.$on('closeBox',function(data) {
 			self.marsk = false
 		})
-
 		bus.$on('nomessage_tag',function(data) {
 			self.showMarsk();
 		})
@@ -79,30 +79,34 @@ export default {
 			e.target.childNodes[2].style.display = 'none'
 		},
 		rmTag(e,index){
+			
 			var id = e.target.id.match(/\d+/)[0];
-			this.$http.get('/api/cancalSub/?tagid='+id)
+			this.$http.post('/api/cancelSub/',{tagid:id})
 				.then(res => {
 					var data = res.body;
-					if(res.status == 1) {
+					if(data.status == 1) {
 						bus.$emit('rmTag',index)
 					}
 				})
 		},
 		closeBox(data){
-			console.log(data)
+			
 		}
 	},
 	computed:{
+		isSelf(){
+			return app.userprofile.userid == $user.userid ? true : false;
+		}
+	},
+	watch:{
 		tagsList(){
 			var data = this.data || [];
 			data.map(function(i){
 				i['titleurl'] = '/label/'+ i.tagid;
 			})
 
+
 			return data
-		},
-		isSelf(){
-			return app.userprofile.userid == $user.userid ? true : false;
 		}
 	}
 }

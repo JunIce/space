@@ -12,30 +12,91 @@
         </div>
 
          <div class="userPageBtn">
-            <a href="/e/member/EditInfo/" class="userInChg">修改资料</a>
+            <template v-if="isSelf">
+              <a href="/e/member/EditInfo/" class="userInChg">修改资料</a>
+            </template>
+            <template v-else>
+              <a href="javascript:;" class="sendMsg"></a>
+              <a href="javascript:;" 
+              class="Follow"
+              :class="{'userHsFol':hasFollow}"
+              @click="addFol"
+              ></a>
+            </template>
               <div class="userHots">
                 <div class="fr"><span>关注</span><i>{{this.followers}}</i></div>
                 <div class="fr"><span>粉丝</span><i>{{this.fans}}</i></div>
               </div>
             </div>
+
+          <div class="user-fen">
+              <p>积分 : <span>{{this.userfen}}</span></p>
+              <p>金币 : <span>{{this.usermoney}}</span></p>
+          </div>
       </div>
 </template>
 
 <script>
 export default {
   name: 'Panel',
-  props:['userprofile'],
+  props:['userprofile', 'userdetail'],
   data () {
     return {
+        hasFollow: false
     }
+  },
+  mounted(){
+    this.hasFollow = app.hasfollow ? true : false
   },
   computed:{
     followers(){
-    
-        return app['detail'].follow ? app['detail'].follow.length : 0
+        var data = this.userdetail.follow || [];
+        return data.length || 0
     },
     fans(){
-        return app['detail'].fans ? app['detail'].fans.length : 0
+      var data = this.userdetail.fans || [];
+        return data.length || 0
+    },
+    isSelf(){
+      return app.userprofile.userid == $user.userid ? true : false;
+    },
+    userfen(){
+      return parseInt(app.userprofile.userfen);
+    },
+    usermoney(){
+      return parseInt(app.userprofile.money);
+    },
+  },
+  methods:{
+    clFollow(e){
+      e.target.classList.add('clFol')
+    },
+    addFol(){
+      var self = this
+        if(!app['login']) {
+          alert('请先登录'); return;
+        }
+        if(!this.hasFollow) {
+           this.$http.post('/api/follow/',{
+            fusr: self.userprofile.userid
+           })
+           .then(res => {
+              var data = res.body
+              if(data.status == 1) {
+                 this.hasFollow = 1
+              }
+           })
+        }else{
+            this.$http.post('/api/cancelFollow/',{
+            s_user:  self.userprofile.userid
+           })
+           .then(res => {
+              var data = res.body
+              if(data.status == 1) {
+                  this.hasFollow = 0
+              }
+           })
+        }
     }
   }
 }
@@ -47,6 +108,7 @@ export default {
     background: #fff;
     text-align: center;
     position: relative;
+    margin-top: 60px;
 }
 .panels-user-head img {
     width: 125px;
@@ -76,20 +138,8 @@ export default {
     top: 45px;
     right: 45px;
 }
-.userPageBtn a {
-    background-color: #f66;
-    color: #fff;
-    display: inline-block;
-    font-size: 14px;
-    border-radius: 4px;
-    vertical-align: middle;
-    position: relative;
-}
-.userAddFol, .userCanFol, .userHsFol, .userInChg {
-    height: 32px;
-    line-height: 32px;
-    width: 120px;
-}
+
+
 .userHots div {
     display: inline-block;
     margin-top: 24px;
@@ -108,4 +158,50 @@ export default {
     margin-top: 8px;
     font-weight: 700;
 }
+.userInChg{
+  background-color: #f66;
+    color: #fff;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 4px;
+  vertical-align: middle;
+  position: relative;
+  height: 32px;
+  line-height: 32px;
+  width: 120px;
+}
+.Follow{
+  background-image: url(../assets/guan.png);
+  background-color: #f66;
+  color: #fff;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 4px;
+  vertical-align: middle;
+  position: relative;
+  height: 32px;
+  line-height: 32px;
+  width: 120px;
+}
+.clFol{
+    background-position: 0 -30px;
+}
+.userHsFol{
+  background-color:#34cd99;
+  background-position: 0 -63px;
+}
+.userHsFol:hover{
+  background-position: 0 -30px;
+  background-color:#ff6666;
+}
+.user-fen{
+  position: absolute;
+  top: 45px;
+  left: 45px;
+  font-size: 14px;
+  color:#999;
+  line-height: 24px;
+  text-align: left;
+}
+.user-fen span{color:#666;}
 </style>

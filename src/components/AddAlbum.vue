@@ -4,14 +4,7 @@
 			<div class="tag-title">添加专辑</div>
 			<div class="album-list">
 				<ul class="alist">
-					<li><span>123</span></li>
-					<li><span>123</span></li>
-					<li><span>123</span></li>
-					<li><span>123</span></li>
-					<li><span>123</span></li>
-					<li><span>123</span></li>
-					<li><span>123</span></li>
-					<li><span>123</span></li>	
+					<li v-for=" i in userAlList "><span>{{i.album_name}}</span></li>
 				</ul>
 
 				<div class="album-create-text">
@@ -19,7 +12,7 @@
 					<input 
 						type="text" 
 						v-model="albumname"
-						@keydown.enter="cAlbum"
+						@keyup.enter="cAlbum"
 					/></div>
 					<div class="album-btn">
 						<button @click="cAlbum">创建</button>
@@ -33,30 +26,36 @@
 
 <script>
 import bus from '@/components/bus'
-
 	export default{
 		name : 'addalbum',
+		props:['data'],
 		data(){
 			return{
+				userdetail : {},
 				albumList : [],
 				albumname :''
 			}
 		},
 		created(){
-			if($user.userid) {
-				this.$http.get('/api/getUserAlbumList/?userid='+ $user.userid)
-				.then(res => {
-					var data = res.body;
-					this.albumList = data;
-				})	
-			}
+			
 		},
 		mounted(){
+			var self = this
 			this.defaultCss()
 		},
 		methods:{
 			cAlbum(){
-				console.log(this.albumname)
+				var self = this;
+				var data = this.xssFilter(this.albumname);
+				if(data){
+					this.$http.post('/api/album/',{album_name:data})
+					.then(res=>{
+						var data = res.body;
+						if(data.status == 1){
+							bus.$emit('createAlbum',{album_name:data.album_name,aid:data.aid})
+						}
+					})
+				}
 			},
 			defaultCss(){
 				var box = document.getElementsByClassName('albumbox')[0];
@@ -72,16 +71,28 @@ import bus from '@/components/bus'
 			},
 			closeBox(){
 				bus.$emit('closeAlbum',false)
+			},
+			xssFilter(s){
+				var pattern = new RegExp("[0-9`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）%——|{}【】‘；：”“'。，、？《》]") 
+				var rs = ""; 
+				for (var i = 0; i < s.length; i++) {
+					rs = rs+s.substr(i, 1).replace(pattern,""); 
+				} 
+				return rs; 
 			}
 		},
 		computed:{
 			winSize(){
-			return {
-				width : document.documentElement.clientWidth,
-				height : document.documentElement.clientHeight
+				return {
+					width : document.documentElement.clientWidth,
+					height : document.documentElement.clientHeight
+				}
+			},
+			userAlList(){
+				return this.data || [];
 			}
 		},
-		}
+
 	}
 </script>
 

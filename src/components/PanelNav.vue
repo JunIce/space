@@ -72,5 +72,5 @@ export default {
 .panelNav li{width:114px;display: inline-block;text-align: center;}
 .panelNav a{margin:0 auto;line-height: 40px;width: 48px;display: block;color:#333;font-size: 16px;border-bottom: 4px solid transparent}
 .panelNav a.active{border-bottom: 4px solid #ff6666;}
-.user-list {     margin: 0 auto;    margin-top: 20px;    position: relative;   min-height: 300px;    margin-bottom: 80px;}
+.user-list {     margin: 0 auto;    margin-top: 20px;    position: relative;   min-height: 300px;    margin-bottom: 80px;padding-bottom: 35px;}
 </style>

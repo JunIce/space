@@ -6,10 +6,11 @@
 			<div >
 				<ul class="tagsList">
 					<li 
-					v-for="tag in publicTags" 
-					
-					
-					><span :id="'tag'+ tag.tagid" class="tag" @click="userSelectTag($event)" >{{tag.tagname}}</span></li>
+					v-for="tag in publicTags">
+
+					<span :id="'tag'+ tag.tagid" class="tag" :class="{'active':tag.check}" @click="userSelectTag($event)" >{{tag.tagname}}</span>
+
+					</li>
 				</ul>
 
 			</div>
@@ -23,34 +24,26 @@
 import bus from '@/components/bus'
 
 export default{
+	props:['data'],
 	data(){
 		return{
 			userTags:[],
-			publicTags : []
+			tagsList:this.data
 		}
-	},
-	created(){
-		var self = this
-		this.$http.get("http://dev.reretu.com:8024/api/getTags/")
-		 .then(res => {
-		 	self.publicTags = res.body;
-		 })
 	},
 	mounted(){
 		var self = this
 		bus.$on('userTags',(data)=>{
 			self.userTags = data
 		})
-	},
-	updated(){
+		
 		this.defaultCss()
-		//this.preventScroll()
 	},
 	methods:{
 		userSelectTag(e){
 			var id = e.target.id.match(/\d+/g)[0];
 			var self = this
-			this.$http.get('http://dev.reretu.com:8024/api/subscribe/?tagid='+id)
+			this.$http.post('/api/subscribe/',{tagid:id})
 			  .then(res => {
 			  	var data = res.body
 			  		if(data.status == 1) {
@@ -80,7 +73,6 @@ export default{
 		},
 		closeBox(){
 			bus.$emit('closeBox',false)
-			
 		}
 	},
 	computed:{
@@ -93,11 +85,21 @@ export default{
 		scrollTop(){
 			return document.body.scrollTop;
 		},
-		afterData(){
-
-			this.publicTags.map(function(i){
-				console.log(i)
-			})
+		publicTags(){
+			var tag = this.tagsList || [];
+			var pubTags = app.publicTags;
+			pubTags.map(function(i){
+					i.check = false;
+			});
+			pubTags.map(function(i){
+				tag.map(function(j){
+					if(i.tagname == j.tagname) {
+						i.check = true
+						return;
+					}
+				})
+			});
+			return pubTags;
 		}
 	},
 	watch :{

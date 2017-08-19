@@ -1,48 +1,92 @@
 <template>
-	<ul class="user-fans">
-		<li v-for="(fan,index) in fansData">
-			<div class="rank-info">
-				<a :href="'/user/'+ fan.userid ">
-				<img :src="fan.userpic">
-				</a>
-				<div class="fans-detail">
-					<p class="fans-username">{{fan.username}}
-					<i class="user-sex" :class="fan.sex"></i>
-					</p>
-					<span class="fans-say">{{fan.sign}}</span>
+ <div>
+	<template v-if="fans.length > 0">
+		<ul class="user-fans">
+			<li v-for="(fan,index) in fans">
+				<div class="rank-info">
+					<a :href="'/user/'+ fan.userid ">
+					<img :src="fan.userpic">
+					</a>
+					<div class="fans-detail">
+						<p class="fans-username">{{fan.username}}
+						<i class="user-sex" :class="fan.sex"></i>
+						</p>
+						<span class="fans-say">{{fan.sign}}</span>
+					</div>
 				</div>
-			</div>
 
-			<a href="javascript:;" class="guanzhuBtn list-btn-margin" 
-			:class="{'has-done':fan.relationship}" :data-uid="fan.userid">{{fan.relationship? '已关注' : '关注'}}</a>				
-		</li>
-	</ul>
+				<a href="javascript:;" class="guanzhuBtn list-btn-margin" 
+				:class="{'has-done':fan.relationship}" :data-uid="fan.userid" @click="userFollow($event)">{{fan.relationship? '已关注' : '关注'}}</a>				
+			</li>
+		</ul>
+	</template>
+
+	<template v-else>
+			<AddPage :nomessage="nofans"></AddPage>
+	</template>
+</div>
 </template>
 <script>
+import AddPage from '@/components/AddPage'
+import bus from '@/components/bus'
 
 export default {
 		name:'Follow',
 		props:['data'],
-		computed:{
-			fansData(){
-				this.data.map(function(i){
-					//
-					if(i.relationship == '0'){
-						i.relationship = false
-					}else{
-						i.relationship = true
-					}
-
-					//
-					if(!i.sign){
-						i.sign = '很懒呢！暂未填写个人介绍！';
-					}
-
-					
-				})
-
-				return this.data
+		data(){
+			return{
+				fans: this.data || [],
+				nofans:{
+					type: 'fans',
+			    	title:'分享高质量图片可以获得更多粉丝哦~~',
+			    	titleurl:'',
+			    	btnName:''
+				}
 			}
+		},
+		computed:{
+			
+		},
+		components:{
+			AddPage,
+		},
+		methods:{
+			userFollow(e){
+				var uid = e.target.getAttribute('data-uid');
+				var self = this
+				if(uid){
+
+					this.fans.map(function(i,index) {
+						if(i.userid == uid) {
+							i.relationship == 1 ? self.unfollow(uid, index) : self.follow(uid, index) 
+						}
+					})
+				}
+			},
+			follow(uid,index){
+				this.$http.post('/api/follow/',{
+		            fusr: uid
+		           })
+		           .then(res => {
+		              var data = res.body
+		              if(data.status == 1) {
+		  				
+		                 this.fans[index].relationship = 1
+		              }
+		           })
+		    },
+		    unfollow(uid,index){
+		    	this.$http.post('/api/cancelFollow/',{
+	            s_user:  uid
+	           })
+	           .then(res => {
+	              var data = res.body
+	              if(data.status == 1) {
+	                 this.fans[index].relationship = 0
+	                 bus.$emit('cancelFollow',index)
+	              }
+	           })
+		    }
 		}
 	}
 </script>

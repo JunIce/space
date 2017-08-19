@@ -2,9 +2,9 @@
 	
 	<div>
 		
-		<template v-if="followData.length > 0">
+		<template v-if="followers.length > 0">
 			<ul class="user-fans">
-				<li v-for="(follower,index) in followData">
+				<li v-for="(follower,index) in followers">
 					<div class="rank-info">
 						<a :href="'/user/'+ follower.userid ">
 						<img :src="follower.userpic">
@@ -40,6 +40,7 @@ import AddPage from '@/components/AddPage'
 		props:['data'],
 		data(){
 			return{
+				followers:this.data || [],
 				nofollewer:{
 					type: 'follow',
 			    	title:'去用户排行关注你感兴趣的人吧',
@@ -49,30 +50,50 @@ import AddPage from '@/components/AddPage'
 			}
 		},
 		computed:{
-			followData(){
-				var data = this.data || [];
-
-				data.map(function(i){
-					//
-					if(i.relationship == '0'){
-						i.relationship = false
-					}else{
-						i.relationship = true
-					}
-
-					//
-					if(!i.sign){
-						i.sign = '很懒呢！暂未填写个人介绍！';
-					}
-
-					
-				})
-
-				return data
-			}
+			
 		},
 		components:{
 			AddPage,
+		},
+		methods:{
+			userFollow(e){
+				var uid = e.target.getAttribute('data-uid');
+				var self = this
+				if(uid){
+
+					this.followers.map(function(i,index) {
+						if(i.userid == uid) {
+							i.relationship == 1 ? self.unfollow(uid, index) : self.follow(uid, index) 
+						}
+					})
+				}
+			},
+			follow(uid,index){
+				this.$http.post('/api/follow/',{
+		            fusr: uid
+		           })
+		           .then(res => {
+		              var data = res.body
+		              if(data.status == 1) {
+		  				
+		                 this.followers[index].relationship = 1
+		              }
+		           })
+		    },
+		    unfollow(uid,index){
+		    	this.$http.post('/api/cancelFollow/',{
+	            s_user:  uid
+	           })
+	           .then(res => {
+	              var data = res.body
+	              if(data.status == 1) {
+	                 this.followers[index].relationship = 0
+	                 setTimeout(()=>{
+	                 	this.followers.splice(index,1)
+	                 },1000)
+	              }
+	           })
+		    }
 		}
 	}
 </script>

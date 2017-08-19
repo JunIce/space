@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <panel :userprofile="userprofile"></panel>
+    <panel :userprofile="userprofile" :userdetail="userdetail"></panel>
     <panelnav :detail="userdetail"></panelnav>
   </div>
 </template>
@@ -21,15 +21,22 @@ export default {
 
       bus.$on('addTag',(data) => {
         var tags = self.userdetail.tags ? self.userdetail.tags :[];
-          
           tags.unshift(data)
-          console.log(self.userdetail)
       })
 
       bus.$on('rmTag',(data) => {
           self.userdetail.tags.splice(data,1);
       })
+      
+      bus.$on('createAlbum',(data) => {
+          self.userdetail.album.create.unshift(data);
+      })
 
+      bus.$on('cancelFollow',(data) => {
+          self.userdetail.follow.splice(data,1);
+      })
+
+      app['login'] = this.isLogin;
   },
   computed:{
       appdata(){
@@ -40,6 +47,9 @@ export default {
       },
       userdetail(){
          return this.appdata.detail;
+      },
+      isLogin(){
+         return $user.userid ? true : false;
       }
   },
   components:{
