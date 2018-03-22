@@ -15,7 +15,7 @@
 			@mouseenter="isSelf && showClose($event,index)"
 			@mouseleave="isSelf && hideClose($event,index)"
 			>
-				<a :href="tag.titleurl">{{tag.tagname}}</a>
+				<a :href="'/label/'+ tag.tagid ">{{tag.tagname}}</a>
 				<i class="rmTag"
 				   :id="'rm_'+ tag.tagid" 
 					@click="isSelf && rmTag($event,index)"
@@ -96,17 +96,6 @@ export default {
 	computed:{
 		isSelf(){
 			return app.userprofile.userid == $user.userid ? true : false;
-		}
-	},
-	watch:{
-		tagsList(){
-			var data = this.data || [];
-			data.map(function(i){
-				i['titleurl'] = '/label/'+ i.tagid;
-			})
-
-
-			return data
 		}
 	}
 }

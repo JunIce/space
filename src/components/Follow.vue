@@ -1,10 +1,10 @@
 <template>
-	
+
 	<div>
-		
+
 		<template v-if="followers.length > 0">
 			<ul class="user-fans">
-				<li v-for="(follower,index) in followers">
+				<li v-for="(follower,index) in renderData">
 					<div class="rank-info">
 						<a :href="'/user/'+ follower.userid ">
 						<img :src="follower.userpic">
@@ -17,13 +17,20 @@
 						</div>
 					</div>
 
-					<a href="javascript:;" class="guanzhuBtn list-btn-margin" 
-					:class="{'has-done':filter(follower.relationship)}" 
+					<a href="javascript:;" class="guanzhuBtn list-btn-margin"
+					:class="{'has-done':filter(follower.relationship)}"
 					:data-uid="follower.userid"
 					@click="userFollow($event)"
-					>{{filter(follower.relationship)? '已关注' : '关注'}}</a>				
+					>{{filter(follower.relationship)? '已关注' : '关注'}}</a>
 				</li>
 			</ul>
+			<template v-if="hasPage >= 1">
+	            <page
+	            :total="followers.length"
+	            :display = "pageLine"
+	            :current-page='currentPage'
+	            @pagechange="pagechange"></page>
+	        </template>
 		</template>
 
 		<template v-else>
@@ -35,12 +42,15 @@
 <script>
 
 import AddPage from '@/components/AddPage'
+import Page from '@/components/Page'
 	export default {
 		name:'Follow',
 		props:['data'],
 		data(){
 			return{
 				followers:this.data || [],
+				pageLine: 8,
+                currentPage: 1,
 				nofollewer:{
 					type: 'follow',
 			    	title:'去用户排行关注你感兴趣的人吧',
@@ -50,14 +60,25 @@ import AddPage from '@/components/AddPage'
 			}
 		},
 		computed:{
-			
+			renderData(){
+    			var end = this.pageLine * this.currentPage;
+    			var start = this.pageLine * (this.currentPage - 1)
+    			return this.followers.slice(start, end)
+    		},
+			hasPage(){
+				return parseInt(this.followers.length/this.pageLine)
+			},
 		},
 		components:{
 			AddPage,
+			Page
 		},
 		methods:{
 			filter(val){
 				return val == 0 ? false : true;
+			},
+			pagechange(data){
+				this.currentPage = data;
 			},
 			userFollow(e){
 				var uid = e.target.getAttribute('data-uid');
@@ -66,7 +87,7 @@ import AddPage from '@/components/AddPage'
 
 					this.followers.map(function(i,index) {
 						if(i.userid == uid) {
-							i.relationship == 1 ? self.unfollow(uid, index) : self.follow(uid, index) 
+							i.relationship == 1 ? self.unfollow(uid, index) : self.follow(uid, index)
 						}
 					})
 				}
@@ -78,7 +99,7 @@ import AddPage from '@/components/AddPage'
 		           .then(res => {
 		              var data = res.body
 		              if(data.status == 1) {
-		  				
+
 		                 this.followers[index].relationship = 1
 		              }
 		           })

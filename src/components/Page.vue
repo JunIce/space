@@ -2,11 +2,11 @@
   <div>
     <ul class="pagination">
       <li class="pre" :class="{'disabled': current == 1}" @click="setCurrent(current - 1)"></li>
-     
+
       <li v-for="p in grouplist" :class="{'active': current == p.val}" @click="setCurrent(p.val)">
-      {{ p.text }} 
+      {{ p.text }}
       </li>
-      
+
       <li class="aft" :class="{'disabled': current == page}" @click="setCurrent(current + 1)"></li>
     </ul>
   </div>
@@ -99,6 +99,7 @@ div{
 	position: absolute;
     bottom: 0;
     width: 100%;
+
 }
 .pagination li{
 	display: inline-block;

@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<div class="userCol-nav">
+		<!-- <div class="userCol-nav">
 		<template v-for="(btn,index) in btnList">
 	        <a href="javascript:;" class="userCol" :class="{userSect:index===number}" @click="selectBtn($event,index)">{{btn}}</a>
 	    </template>    
-  		</div>
+  		</div> -->
 		
 		<template v-if="photoData.length > 0">
   		<div >
@@ -41,7 +41,7 @@ export default {
 	data(){
 		return{ 
 			 number: 0, // 默认开始
-			 btnList:['我收藏的','我发布的'],
+			 // btnList:['我收藏的'],
 		 	 photoData:[],
 		 	 currentPage: 1,
 		 	 pageLine :12, // 每页显示条数
@@ -106,8 +106,8 @@ export default {
 <style scoped>
 .userCol-nav {display: flex;}
 .userCol {font-size:12px;color:#333;display: inline-block;    padding: 8px 30px;    background-color: #fff;    text-align: center;   }
-.userCol:first-child {border-radius:5px 0 0 5px}
-.userCol:last-child {border-radius:0 5px 5px 0}
+/*.userCol:first-child {border-radius:5px 0 0 5px}*/
+/*.userCol:last-child {border-radius:0 5px 5px 0}*/
 .userSect {background-color: #ff6666;color: #fff;}
 
 .user-photo-list{width: 966px;margin-left: -3px;display: flex;flex-wrap:wrap;margin-top:20px;}

@@ -2,7 +2,7 @@
  <div>
 	<template v-if="fans.length > 0">
 		<ul class="user-fans">
-			<li v-for="(fan,index) in fans">
+			<li v-for="(fan,index) in renderData">
 				<div class="rank-info">
 					<a :href="'/user/'+ fan.userid ">
 					<img :src="fan.userpic">
@@ -15,10 +15,17 @@
 					</div>
 				</div>
 
-				<a href="javascript:;" class="guanzhuBtn list-btn-margin" 
-				:class="{'has-done':filter(fan.relationship)}" :data-uid="fan.userid" @click="userFollow($event)">{{filter(fan.relationship) ? '已关注' : '关注'}}</a>				
+				<a href="javascript:;" class="guanzhuBtn list-btn-margin"
+				:class="{'has-done':filter(fan.relationship)}" :data-uid="fan.userid" @click="userFollow($event)">{{filter(fan.relationship) ? '已关注' : '关注'}}</a>
 			</li>
 		</ul>
+        <template v-if="hasPage >= 1">
+            <page
+            :total="fans.length"
+            :display = "pageLine"
+            :current-page='currentPage'
+            @pagechange="pagechange"></page>
+        </template>
 	</template>
 
 	<template v-else>
@@ -29,6 +36,7 @@
 <script>
 import AddPage from '@/components/AddPage'
 import bus from '@/components/bus'
+import Page from '@/components/Page'
 
 export default {
 		name:'Follow',
@@ -36,6 +44,8 @@ export default {
 		data(){
 			return{
 				fans: this.data || [],
+                pageLine: 8,
+                currentPage: 1,
 				nofans:{
 					type: 'fans',
 			    	title:'分享高质量图片可以获得更多粉丝哦~~',
@@ -45,15 +55,26 @@ export default {
 			}
 		},
 		computed:{
-			
+            renderData(){
+    			var end = this.pageLine * this.currentPage;
+    			var start = this.pageLine * (this.currentPage - 1)
+    			return this.fans.slice(start, end)
+    		},
+            hasPage(){
+				return parseInt(this.fans.length/this.pageLine)
+			},
 		},
 		components:{
 			AddPage,
+            Page
 		},
 		methods:{
 			filter(val){
 				return val == 0 ? false : true;
 			},
+            pagechange(data){
+    			this.currentPage = data;
+    		},
 			userFollow(e){
 				var uid = e.target.getAttribute('data-uid');
 				var self = this
@@ -61,7 +82,7 @@ export default {
 
 					this.fans.map(function(i,index) {
 						if(i.userid == uid) {
-							i.relationship == 1 ? self.unfollow(uid, index) : self.follow(uid, index) 
+							i.relationship == 1 ? self.unfollow(uid, index) : self.follow(uid, index)
 						}
 					})
 				}
@@ -73,7 +94,7 @@ export default {
 		           .then(res => {
 		              var data = res.body
 		              if(data.status == 1) {
-		  				
+
 		                 this.fans[index].relationship = 1
 		              }
 		           })
